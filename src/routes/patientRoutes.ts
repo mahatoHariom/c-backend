@@ -2,12 +2,8 @@ import express, { Request, Response } from "express";
 import { z } from "zod";
 import { handleError } from "../middleware/error";
 import { prisma } from "../prisma";
-import cors from "cors";
 
 const router = express.Router();
-
-// Enable CORS
-router.use(cors());
 
 const PatientInputSchema = z.object({
   name: z.string().min(1, "Name is required"),

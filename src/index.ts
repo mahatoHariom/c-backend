@@ -1,24 +1,17 @@
-import express, { Application } from "express";
+import express from "express";
+import router from "./routes/patientRoutes";
 import cors from "cors";
-import patientRoutes from "./routes/patientRoutes";
-import { prisma } from "./prisma"; // Use new Prisma client
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const app: Application = express();
+const app = express();
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 app.use(express.json());
-app.use("/api", patientRoutes);
+app.use("/api", router);
 
-app.get("/", (req, res) => {
-  res.send("Server is running!");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// Remove app.listen() in serverless environments
-export default app;
