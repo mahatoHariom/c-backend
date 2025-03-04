@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
-import { prisma } from "../index";
 import { z } from "zod";
 import { handleError } from "../middleware/error";
+import { prisma } from "../prisma";
+import cors from "cors";
 
 const router = express.Router();
+
+// Enable CORS
+router.use(cors());
 
 const PatientInputSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -48,7 +52,6 @@ router.post(
   }
 );
 
-// GET /follow-ups
 router.get("/follow-ups", async (req: Request, res: Response): Promise<any> => {
   try {
     const followUps = await prisma.followUp.findMany({
@@ -61,7 +64,6 @@ router.get("/follow-ups", async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-// POST /respond
 router.post(
   "/respond",
   async (req: Request<{}, {}, unknown>, res: Response): Promise<any> => {
@@ -73,7 +75,7 @@ router.post(
         where: { id: followUpId },
         data: {
           status,
-          response: response || undefined,
+          response: response || null,
         },
         include: { patient: true },
       });
@@ -97,7 +99,6 @@ router.post(
   }
 );
 
-// GET /notifications
 router.get(
   "/notifications",
   async (req: Request, res: Response): Promise<any> => {
